@@ -1,0 +1,92 @@
+.seat-card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.seat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.seat-card.occupied {
+  border-left: 4px solid #ef4444;
+}
+
+.seat-card.open {
+  border-left: 4px solid #22c55e;
+}
+
+.seat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.seat-header h2 {
+  font-size: 1.5rem;
+  color: #1f2937;
+  margin: 0;
+}
+
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-badge.taken {
+  background-color: #fee2e2;
+  color: #dc2626;
+}
+
+.status-badge.open {
+  background-color: #dcfce7;
+  color: #16a34a;
+}
+
+.seat-info {
+  flex-grow: 1;
+}
+
+.last-updated {
+  color: #6b7280;
+  font-size: 0.875rem;
+  margin: 0;
+}
+
+.toggle-button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.2s;
+  width: 100%;
+}
+
+.toggle-button:hover {
+  opacity: 0.9;
+  transform: scale(1.02);
+}
+
+.toggle-button:active {
+  transform: scale(0.98);
+}
+
+.toggle-button:focus {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}
+
