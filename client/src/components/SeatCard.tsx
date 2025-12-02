@@ -15,14 +15,17 @@ type SeatState = {
   id: number
   occupied: boolean
   updatedAt: string
+  expiresAt?: string
 }
 
 type SeatCardProps = {
   seat: SeatState
   onToggle: () => void
+  onExtendTimeout: () => void
+  position?: string
 }
 
-function SeatCard({ seat, onToggle }: SeatCardProps) {
+function SeatCard({ seat, onToggle, onExtendTimeout, position }: SeatCardProps) {
   // Calculate time ago from updatedAt timestamp
   const timeAgo = useMemo(() => {
     const updated = new Date(seat.updatedAt)
@@ -43,26 +46,96 @@ function SeatCard({ seat, onToggle }: SeatCardProps) {
     }
   }, [seat.updatedAt])
 
+  // Calculate time remaining until timeout (if occupied)
+  const timeRemaining = useMemo(() => {
+    if (!seat.occupied || !seat.expiresAt) return null
+    
+    const expires = new Date(seat.expiresAt)
+    const now = new Date()
+    const msRemaining = expires.getTime() - now.getTime()
+    
+    if (msRemaining <= 0) return 'Expired'
+    
+    const minutesRemaining = Math.floor(msRemaining / (1000 * 60))
+    const hoursRemaining = Math.floor(minutesRemaining / 60)
+    const remainingMinutes = minutesRemaining % 60
+    
+    if (hoursRemaining > 0) {
+      return `${hoursRemaining}h ${remainingMinutes}m left`
+    } else {
+      return `${remainingMinutes}m left`
+    }
+  }, [seat.occupied, seat.expiresAt])
+
+  // Check if timeout is approaching (less than 10 minutes)
+  const isTimeoutApproaching = useMemo(() => {
+    if (!seat.occupied || !seat.expiresAt) return false
+    
+    const expires = new Date(seat.expiresAt)
+    const now = new Date()
+    const msRemaining = expires.getTime() - now.getTime()
+    const minutesRemaining = Math.floor(msRemaining / (1000 * 60))
+    
+    return minutesRemaining <= 10 && minutesRemaining > 0
+  }, [seat.occupied, seat.expiresAt])
+
   return (
-    <div className={`seat-card ${seat.occupied ? 'occupied' : 'open'}`}>
-      <div className="seat-header">
-        <h2>Seat {seat.id}</h2>
-        <span className={`status-badge ${seat.occupied ? 'taken' : 'open'}`}>
-          {seat.occupied ? 'Taken' : 'Open'}
-        </span>
+    <div className={`library-table ${seat.occupied ? 'occupied' : 'available'} ${position || ''}`}>
+      {/* Table Surface */}
+      <div className="table-surface">
+        <div className="table-number">Table {seat.id}</div>
+        <div className="table-items">
+          {seat.occupied ? '📚💻' : ''}
+        </div>
       </div>
       
-      <div className="seat-info">
-        <p className="last-updated">Updated {timeAgo}</p>
+      {/* Chair */}
+      <div className={`chair ${seat.occupied ? 'occupied' : 'available'}`}>
+        <div className="chair-back"></div>
+        <div className="chair-seat">
+          {seat.occupied ? '👤' : ''}
+        </div>
       </div>
 
-      <button 
-        className="toggle-button"
-        onClick={onToggle}
-        aria-label={`Toggle seat ${seat.id}`}
-      >
-        {seat.occupied ? 'Mark as Open' : 'Mark as Taken'}
-      </button>
+      {/* Status Info */}
+      <div className="table-info">
+        <span className={`status-indicator ${seat.occupied ? 'taken' : 'open'}`}>
+          {seat.occupied ? 'OCCUPIED' : 'AVAILABLE'}
+        </span>
+        <div className="last-updated">Updated {timeAgo}</div>
+        
+        {/* Timer Display */}
+        {seat.occupied && timeRemaining && (
+          <div className={`timeout-timer ${isTimeoutApproaching ? 'warning' : ''}`}>
+            ⏰ {timeRemaining}
+          </div>
+        )}
+      </div>
+
+      {/* Action Buttons */}
+      <div className="table-actions">
+        {/* Extend Timeout Button (only show if occupied and approaching timeout) */}
+        {seat.occupied && isTimeoutApproaching && (
+          <button 
+            className="extend-button"
+            onClick={onExtendTimeout}
+            aria-label={`Extend timeout for table ${seat.id}`}
+            title="Click to extend your time by another hour"
+          >
+            🕐 Extend Time
+          </button>
+        )}
+        
+        {/* Toggle Button (for testing) */}
+        <button 
+          className="table-toggle-button"
+          onClick={onToggle}
+          aria-label={`Toggle table ${seat.id}`}
+          title="Click to simulate someone sitting/leaving"
+        >
+          {seat.occupied ? 'Leave Table' : 'Sit Down'}
+        </button>
+      </div>
     </div>
   )
 }

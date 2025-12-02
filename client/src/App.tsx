@@ -17,6 +17,7 @@ type SeatState = {
   id: number
   occupied: boolean
   updatedAt: string
+  expiresAt?: string
 }
 
 // Backend server URL
@@ -63,6 +64,18 @@ function App() {
       )
     })
 
+    // Handle seat timeout events
+    newSocket.on('seatTimeout', (data: { seatId: number, message: string }) => {
+      console.log('Seat timeout:', data)
+      // Could show a notification here
+    })
+
+    // Handle seat extension events
+    newSocket.on('seatExtended', (data: { seatId: number, message: string, expiresAt: string }) => {
+      console.log('Seat timeout extended:', data)
+      // Could show a notification here
+    })
+
     setSocket(newSocket)
 
     // Cleanup: disconnect when component unmounts
@@ -105,6 +118,30 @@ function App() {
     }
   }
 
+  // Handle extending seat timeout (user confirms they're still there)
+  const handleExtendTimeout = async (seatId: number) => {
+    try {
+      const response = await fetch(`${SERVER_URL}/api/seats/${seatId}/extend`, {
+        method: 'POST'
+      })
+      const result = await response.json()
+      
+      if (response.ok) {
+        // Update local state
+        setSeats(prevSeats =>
+          prevSeats.map(seat =>
+            seat.id === result.id ? result : seat
+          )
+        )
+        console.log(`Timeout extended for seat ${seatId}`)
+      } else {
+        console.error('Failed to extend timeout:', result.error)
+      }
+    } catch (error) {
+      console.error('Failed to extend timeout:', error)
+    }
+  }
+
   return (
     <div className="app">
       <header className="app-header">
@@ -117,17 +154,64 @@ function App() {
         </div>
       </header>
 
-      <main className="seats-container">
+      <main className="library-layout">
         {seats.length === 0 ? (
           <p className="loading">Loading seat status...</p>
         ) : (
-          seats.map(seat => (
-            <SeatCard
-              key={seat.id}
-              seat={seat}
-              onToggle={() => handleToggleSeat(seat.id)}
-            />
-          ))
+          <div className="library-floor-plan">
+            {/* Library Layout Legend */}
+            <div className="layout-legend">
+              <div className="legend-item">
+                <div className="legend-color available"></div>
+                <span>Available</span>
+              </div>
+              <div className="legend-item">
+                <div className="legend-color occupied"></div>
+                <span>Occupied</span>
+              </div>
+            </div>
+
+            {/* Study Area Layout */}
+            <div className="study-areas">
+              <div className="study-section">
+                <div className="tables-row">
+                  <SeatCard
+                    key={seats[0]?.id}
+                    seat={seats[0]}
+                    onToggle={() => handleToggleSeat(seats[0]?.id)}
+                    onExtendTimeout={() => handleExtendTimeout(seats[0]?.id)}
+                    position="table-1"
+                  />
+                  <SeatCard
+                    key={seats[1]?.id}
+                    seat={seats[1]}
+                    onToggle={() => handleToggleSeat(seats[1]?.id)}
+                    onExtendTimeout={() => handleExtendTimeout(seats[1]?.id)}
+                    position="table-2"
+                  />
+                </div>
+              </div>
+
+              <div className="study-section">
+                <div className="tables-row">
+                  <SeatCard
+                    key={seats[2]?.id}
+                    seat={seats[2]}
+                    onToggle={() => handleToggleSeat(seats[2]?.id)}
+                    onExtendTimeout={() => handleExtendTimeout(seats[2]?.id)}
+                    position="table-3"
+                  />
+                  <SeatCard
+                    key={seats[3]?.id}
+                    seat={seats[3]}
+                    onToggle={() => handleToggleSeat(seats[3]?.id)}
+                    onExtendTimeout={() => handleExtendTimeout(seats[3]?.id)}
+                    position="table-4"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
         )}
       </main>
     </div>

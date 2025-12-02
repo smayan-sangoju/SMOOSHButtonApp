@@ -1,92 +1,260 @@
-.seat-card {
-  background: white;
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s, box-shadow 0.2s;
+/* Library Table Component */
+.library-table {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-}
-
-.seat-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-}
-
-.seat-card.occupied {
-  border-left: 4px solid #ef4444;
-}
-
-.seat-card.open {
-  border-left: 4px solid #22c55e;
-}
-
-.seat-header {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
+  position: relative;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  margin: 10px;
 }
 
-.seat-header h2 {
+.library-table:hover {
+  transform: scale(1.05);
+}
+
+/* Table Surface */
+.table-surface {
+  width: 120px;
+  height: 80px;
+  background: linear-gradient(135deg, #8b4513, #a0522d);
+  border-radius: 8px;
+  box-shadow: 
+    0 4px 8px rgba(0, 0, 0, 0.2),
+    inset 0 2px 4px rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  border: 2px solid #654321;
+}
+
+.table-surface::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  right: 2px;
+  bottom: 2px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+}
+
+.table-number {
+  font-size: 0.75rem;
+  font-weight: bold;
+  color: white;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  margin-bottom: 4px;
+}
+
+.table-items {
+  font-size: 1.2rem;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Chair */
+.chair {
+  margin-top: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.chair-back {
+  width: 50px;
+  height: 35px;
+  background: linear-gradient(135deg, #4a5568, #718096);
+  border-radius: 8px 8px 4px 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  border: 1px solid #2d3748;
+}
+
+.chair-seat {
+  width: 45px;
+  height: 35px;
+  background: linear-gradient(135deg, #4a5568, #718096);
+  border-radius: 4px;
+  margin-top: -5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  border: 1px solid #2d3748;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 1.5rem;
-  color: #1f2937;
-  margin: 0;
 }
 
-.status-badge {
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 0.875rem;
-  font-weight: 600;
+/* Available State */
+.library-table.available .table-surface {
+  background: linear-gradient(135deg, #10b981, #34d399);
+  border-color: #059669;
+  box-shadow: 
+    0 4px 8px rgba(16, 185, 129, 0.3),
+    inset 0 2px 4px rgba(255, 255, 255, 0.2);
+}
+
+.library-table.available .chair {
+  filter: brightness(1.1);
+}
+
+/* Occupied State */
+.library-table.occupied .table-surface {
+  background: linear-gradient(135deg, #ef4444, #f87171);
+  border-color: #dc2626;
+  box-shadow: 
+    0 4px 8px rgba(239, 68, 68, 0.3),
+    inset 0 2px 4px rgba(255, 255, 255, 0.1);
+}
+
+.library-table.occupied .chair {
+  filter: brightness(0.9);
+}
+
+/* Status Info */
+.table-info {
+  margin-top: 10px;
+  text-align: center;
+  min-height: 60px;
+}
+
+.status-indicator {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 12px;
+  margin-bottom: 4px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
-.status-badge.taken {
-  background-color: #fee2e2;
+.status-indicator.taken {
+  background: rgba(239, 68, 68, 0.2);
   color: #dc2626;
+  border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
-.status-badge.open {
-  background-color: #dcfce7;
-  color: #16a34a;
-}
-
-.seat-info {
-  flex-grow: 1;
+.status-indicator.open {
+  background: rgba(16, 185, 129, 0.2);
+  color: #059669;
+  border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
 .last-updated {
+  font-size: 0.65rem;
   color: #6b7280;
-  font-size: 0.875rem;
   margin: 0;
 }
 
-.toggle-button {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+/* Timer Display */
+.timeout-timer {
+  font-size: 0.7rem;
+  font-weight: bold;
+  margin-top: 4px;
+  padding: 2px 6px;
+  border-radius: 8px;
+  background: rgba(59, 130, 246, 0.2);
+  color: #2563eb;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
+.timeout-timer.warning {
+  background: rgba(245, 158, 11, 0.2);
+  color: #d97706;
+  border-color: rgba(245, 158, 11, 0.3);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* Action Buttons Container */
+.table-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+/* Extend Button */
+.extend-button {
+  background: linear-gradient(135deg, #f59e0b, #fbbf24);
   color: white;
   border: none;
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-size: 0.9rem;
+  padding: 6px 12px;
+  border-radius: 15px;
+  font-size: 0.65rem;
   font-weight: 600;
   cursor: pointer;
-  transition: opacity 0.2s, transform 0.2s;
-  width: 100%;
-}
-
-.toggle-button:hover {
+  transition: all 0.2s;
   opacity: 0.9;
-  transform: scale(1.02);
+  animation: glow 2s infinite;
 }
 
-.toggle-button:active {
-  transform: scale(0.98);
+.extend-button:hover {
+  opacity: 1;
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4);
 }
 
-.toggle-button:focus {
-  outline: 2px solid #667eea;
-  outline-offset: 2px;
+.extend-button:active {
+  transform: scale(0.95);
+}
+
+@keyframes glow {
+  0%, 100% { box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3); }
+  50% { box-shadow: 0 2px 12px rgba(245, 158, 11, 0.5); }
+}
+
+/* Toggle Button */
+.table-toggle-button {
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 15px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  opacity: 0.8;
+}
+
+.table-toggle-button:hover {
+  opacity: 1;
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+}
+
+.table-toggle-button:active {
+  transform: scale(0.95);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .library-table {
+    margin: 5px;
+  }
+  
+  .table-surface {
+    width: 100px;
+    height: 70px;
+  }
+  
+  .table-number {
+    font-size: 0.7rem;
+  }
+  
+  .chair-back, .chair-seat {
+    width: 40px;
+    height: 30px;
+  }
 }
 
