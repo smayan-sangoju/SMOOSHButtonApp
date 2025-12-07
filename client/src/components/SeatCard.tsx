@@ -8,7 +8,7 @@
  * - Manual toggle button for testing
  */
 
-import { useMemo } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import './SeatCard.css'
 
 type SeatState = {
@@ -26,6 +26,18 @@ type SeatCardProps = {
 }
 
 function SeatCard({ seat, onToggle, onExtendTimeout, position }: SeatCardProps) {
+  // Live current time state that updates every second for the countdown timer
+  const [currentTime, setCurrentTime] = useState(new Date())
+
+  // Update current time every second to make the countdown timer live
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(new Date())
+    }, 1000) // Update every second
+
+    return () => clearInterval(interval)
+  }, [])
+
   // Calculate time ago from updatedAt timestamp
   const timeAgo = useMemo(() => {
     const updated = new Date(seat.updatedAt)
@@ -46,38 +58,41 @@ function SeatCard({ seat, onToggle, onExtendTimeout, position }: SeatCardProps) 
     }
   }, [seat.updatedAt])
 
-  // Calculate time remaining until timeout (if occupied)
+  // Calculate time remaining until timeout (if occupied) - shows minutes and seconds, updates live
   const timeRemaining = useMemo(() => {
     if (!seat.occupied || !seat.expiresAt) return null
     
     const expires = new Date(seat.expiresAt)
-    const now = new Date()
+    const now = currentTime
     const msRemaining = expires.getTime() - now.getTime()
     
     if (msRemaining <= 0) return 'Expired'
     
-    const minutesRemaining = Math.floor(msRemaining / (1000 * 60))
-    const hoursRemaining = Math.floor(minutesRemaining / 60)
-    const remainingMinutes = minutesRemaining % 60
+    const totalSeconds = Math.floor(msRemaining / 1000)
+    const hoursRemaining = Math.floor(totalSeconds / 3600)
+    const minutesRemaining = Math.floor((totalSeconds % 3600) / 60)
+    const secondsRemaining = totalSeconds % 60
     
     if (hoursRemaining > 0) {
-      return `${hoursRemaining}h ${remainingMinutes}m left`
+      return `${hoursRemaining}h ${minutesRemaining}m ${secondsRemaining}s left`
+    } else if (minutesRemaining > 0) {
+      return `${minutesRemaining}m ${secondsRemaining}s left`
     } else {
-      return `${remainingMinutes}m left`
+      return `${secondsRemaining}s left`
     }
-  }, [seat.occupied, seat.expiresAt])
+  }, [seat.occupied, seat.expiresAt, currentTime])
 
   // Check if timeout is approaching (less than 10 minutes)
   const isTimeoutApproaching = useMemo(() => {
     if (!seat.occupied || !seat.expiresAt) return false
     
     const expires = new Date(seat.expiresAt)
-    const now = new Date()
+    const now = currentTime
     const msRemaining = expires.getTime() - now.getTime()
     const minutesRemaining = Math.floor(msRemaining / (1000 * 60))
     
     return minutesRemaining <= 10 && minutesRemaining > 0
-  }, [seat.occupied, seat.expiresAt])
+  }, [seat.occupied, seat.expiresAt, currentTime])
 
   return (
     <div className={`library-table ${seat.occupied ? 'occupied' : 'available'} ${position || ''}`}>
