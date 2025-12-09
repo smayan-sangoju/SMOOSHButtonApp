@@ -2,7 +2,7 @@
 
 A real-time library seat availability system using Arduino, Node.js, and React.
 
-## 📋 Overview
+## Overview
 
 This project consists of three main components:
 
@@ -18,7 +18,7 @@ This project consists of three main components:
 4. The backend broadcasts the update to all connected web clients via WebSocket
 5. The React frontend receives the update and immediately reflects the change in the UI
 
-## 🛠️ Prerequisites
+## Prerequisites
 
 - **Arduino IDE** (version 1.8+ or 2.0+) - [Download here](https://www.arduino.cc/en/software)
 - **Node.js** (version 18 or higher) - [Download here](https://nodejs.org/)
@@ -30,7 +30,7 @@ This project consists of three main components:
   - Resistors (appropriate values for your LEDs)
   - Breadboard and jumper wires
 
-## 🔌 Hardware Setup
+## Hardware Setup
 
 ### Wiring Configuration
 
@@ -55,7 +55,7 @@ The firmware assumes the following pin assignments:
 - Connect each LED's anode (long leg) through a resistor (220Ω-1kΩ) to the assigned digital pin
 - Connect each LED's cathode (short leg) to GND
 
-## 📦 Installation & Setup
+## Installation & Setup
 
 ### Step 1: Flash the Arduino Firmware
 
@@ -153,7 +153,7 @@ The firmware assumes the following pin assignments:
 
    You should see the dashboard with 4 seat cards, all showing "Open" initially.
 
-## 🚀 Usage
+## Usage
 
 ### Normal Operation
 
@@ -187,7 +187,7 @@ The Arduino sends one message per seat on startup, all set to `false`:
 **RESET command (optional):**
 You can send `RESET\n` to the Arduino over Serial to clear all seats and turn off all LEDs.
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 SMOOSHButtonApp/
@@ -210,7 +210,7 @@ SMOOSHButtonApp/
 └── README.md                    # This file
 ```
 
-## 🔧 Troubleshooting
+## Troubleshooting
 
 ### Arduino Not Detected
 
@@ -246,7 +246,7 @@ SMOOSHButtonApp/
 - **Check resistors**: Ensure appropriate resistors are used (220Ω-1kΩ typically)
 - **Check Serial Monitor**: Verify the Arduino is sending messages when buttons are pressed
 
-## 📝 Development Notes
+## Development Notes
 
 ### Backend API Endpoints
 
@@ -264,7 +264,7 @@ SMOOSHButtonApp/
 - **Change pin assignments**: Update the `BUTTON_PINS` and `LED_PINS` arrays in the Arduino sketch
 - **Change baud rate**: Update `SERIAL_BAUD_RATE` in both Arduino sketch and backend server
 
-## 🎓 For Beginners
+## For Beginners
 
 ### Key Concepts
 
@@ -279,11 +279,3 @@ All code includes comments explaining:
 - What each section does
 - Why certain design decisions were made
 - How the hardware and software interact
-
-## 📄 License
-
-MIT License - Feel free to use this for your class project!
-
-## 🙏 Acknowledgments
-
-Built for an engineering design project. Keep it simple, keep it working!
